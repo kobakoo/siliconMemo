@@ -14,6 +14,8 @@ function Page() {
   const [desc, setDesc] = useState("");
   const [thumbnail, setThumbnail] = useState("");
   const [memo, setMemo] = useState("");
+  const [edit, setEdit] = useState(false);
+
   async function getProfile() {
     const docRef = doc(db, "users", params.uid, "notes", params.pid);
     const docSnap = await getDoc(docRef);
@@ -26,18 +28,27 @@ function Page() {
     } else {
       // docSnap.data() will be undefined in this case
       console.log("No such document!");
-      setUserName("404 not Found");
     }
   }
+
   async function save() {
-    await updateDoc(doc(db, "users", params.uid, "notes", params.pid)),
-      {
-        memo: memo,
-      };
+    const washingtonRef = doc(db, "users", params.uid, "notes", params.pid);
+    await updateDoc(washingtonRef, {
+      memo: memo,
+    });
   }
   useEffect(() => {
     getProfile();
   });
+
+  setTimeout(async () => {
+    if (auth.currentUser != null) {
+      if (params.uid === auth.currentUser.uid) {
+        setEdit(true);
+        console.log(edit);
+      }
+    }
+  }, 1000);
 
   return (
     <div>
@@ -72,23 +83,35 @@ function Page() {
           Apple Park, Cupertino, United States
         </p>
       </div>
-      <div className="lg:w-1/3 md:w-2/3 sm:w-10/12 w-full mx-auto mb-6">
-        <div className="mx-5">
-          <button
-            className="z-10 bg-[#0071e3] py-2  text-white rounded-full font-normal text-center px-4 text-base"
-            onClick={save()}
-          >
-            保存する
-          </button>
+      {edit ? (
+        <div className="lg:w-1/3 md:w-2/3 sm:w-10/12 w-full mx-auto mb-6">
+          <div className="mx-5">
+            <button
+              className="z-10 bg-[#0071e3] py-2  text-white rounded-full font-normal text-center px-4 text-base"
+              onClick={save()}
+            >
+              保存する
+            </button>
+          </div>
         </div>
-      </div>
+      ) : (
+        <></>
+      )}
       <div className="lg:w-1/3 md:w-2/3 sm:w-10/12 w-full mx-auto mb-6">
         <div className="mx-5">
-          <textarea
-            className="mb-3 font-sans font-normal text-base leading-normal w-full max-w-full outline-0 border-0"
-            onChange={(e) => setMemo(e.target.value)}
-            value={memo}
-          ></textarea>
+          {edit ? (
+            <textarea
+              className="mb-3 font-sans font-normal text-base leading-normal w-full max-w-full outline-0 border-0"
+              onChange={(event) => setMemo(event.target.value)}
+              value={memo}
+            />
+          ) : (
+            <p
+              className="mb-3 font-sans font-normal text-base leading-normal w-full max-w-full outline-0 border-0"
+            >
+              {memo}
+            </p>
+          )}
         </div>
       </div>
     </div>

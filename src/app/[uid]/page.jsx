@@ -41,24 +41,24 @@ function Page() {
         setEdit(true);
         console.log(edit);
       }
-      getProfile();
-      const querySnapshot = await getDocs(
-        collection(db, "users", params.uid, "notes")
-      );
-      let notesArray = [];
-      querySnapshot.forEach((doc) => {
-        // doc.data() is never undefined for query doc snapshots
-        console.log(doc.id, " => ", doc.data());
-        // const dataValue = doc.data();
-        notesArray.push({
-          key: doc.id,
-          title: doc.get("title"),
-          desc: doc.get("description"),
-          thumbnail: doc.get("thumbnail"),
-        });
-      });
-      setNotes(notesArray);
     }
+    getProfile();
+    const querySnapshot = await getDocs(
+      collection(db, "users", params.uid, "notes")
+    );
+    let notesArray = [];
+    querySnapshot.forEach((doc) => {
+      // doc.data() is never undefined for query doc snapshots
+      console.log(doc.id, " => ", doc.data());
+      // const dataValue = doc.data();
+      notesArray.push({
+        key: doc.id,
+        title: doc.get("title"),
+        desc: doc.get("description"),
+        thumbnail: doc.get("thumbnail"),
+      });
+    });
+    setNotes(notesArray);
   }, 1000);
 
   return (

@@ -31,17 +31,20 @@ function Page() {
     }
   }
 
-  async function save() {
+  const save = async () => {
     const washingtonRef = doc(db, "users", params.uid, "notes", params.pid);
     await updateDoc(washingtonRef, {
       memo: memo,
     });
-  }
-  useEffect(() => {
-    getProfile();
-  });
+  };
+
+  // useEffect(() => {
+  //   getProfile();
+  // });
 
   setTimeout(async () => {
+    getProfile();
+
     if (auth.currentUser != null) {
       if (params.uid === auth.currentUser.uid) {
         setEdit(true);
@@ -79,16 +82,14 @@ function Page() {
         />
       </div>
       <div className="lg:w-1/3 md:w-2/3 sm:w-10/12 w-full mx-auto my-3 mb-14">
-        <p className="text-xs text-zinc-500 mb-3 mx-5">
-          Apple Park, Cupertino, United States
-        </p>
+        <p className="text-xs text-zinc-500 mb-3 mx-5">{title}</p>
       </div>
       {edit ? (
         <div className="lg:w-1/3 md:w-2/3 sm:w-10/12 w-full mx-auto mb-6">
           <div className="mx-5">
             <button
               className="z-10 bg-[#0071e3] py-2  text-white rounded-full font-normal text-center px-4 text-base"
-              onClick={save()}
+              onClick={save}
             >
               保存する
             </button>
@@ -102,13 +103,12 @@ function Page() {
           {edit ? (
             <textarea
               className="mb-3 font-sans font-normal text-base leading-normal w-full max-w-full outline-0 border-0"
-              onChange={(event) => setMemo(event.target.value)}
+              onChange={(e) => setMemo(e.target.value)}
               value={memo}
+              rows={10}
             />
           ) : (
-            <p
-              className="mb-3 font-sans font-normal text-base leading-normal w-full max-w-full outline-0 border-0"
-            >
+            <p className="mb-3 font-sans font-normal text-base leading-normal w-full max-w-full outline-0 border-0">
               {memo}
             </p>
           )}

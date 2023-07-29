@@ -16,22 +16,25 @@ function Page() {
   const pathname = usePathname();
   const uid = params.uid;
   const [edit, setEdit] = useState(false);
-  const [userName, setUserName] = useState("");
+  const [userName, setUserName] = useState("読み込み中...");
   const [userIcon, setUserIcon] = useState("");
   const [notes, setNotes] = useState([]);
+  const [temp, setTemp] = useState(0);
 
   async function getProfile() {
-    const docRef = doc(db, "users", params.uid);
-    const docSnap = await getDoc(docRef);
+    if (temp === 0) {
+      const docRef = doc(db, "users", params.uid);
+      const docSnap = await getDoc(docRef);
 
-    if (docSnap.exists()) {
-      console.log("Document data:", docSnap.data());
-      setUserIcon(docSnap.get("iconUrl"));
-      setUserName(docSnap.get("name"));
-    } else {
-      // docSnap.data() will be undefined in this case
-      console.log("No such document!");
-      setUserName("404 not Found");
+      if (docSnap.exists()) {
+        console.log("Document data:", docSnap.data());
+        setUserIcon(docSnap.get("iconUrl"));
+        setUserName(docSnap.get("name"));
+      } else {
+        // docSnap.data() will be undefined in this case
+        console.log("No such document!");
+        setUserName("404 not Found");
+      }
     }
   }
 
@@ -43,6 +46,7 @@ function Page() {
       }
     }
     getProfile();
+    setTemp(1);
     const querySnapshot = await getDocs(
       collection(db, "users", params.uid, "notes")
     );
@@ -63,6 +67,7 @@ function Page() {
 
   return (
     <div className="overflow-x-auto">
+      <title>{userName}</title>
       <div className="lg:w-1/2 md:w-2/3 sm:w-10/12 w-full mx-auto my-10 mb-20">
         <div className="sm:flex sm:flex-nowrap lg:gap-10 md:gap-7 sm:gap-5 items-start">
           <Image

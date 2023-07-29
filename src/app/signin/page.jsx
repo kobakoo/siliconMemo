@@ -12,6 +12,7 @@ import { useRouter } from "next/navigation";
 import { doc, setDoc, addDoc, collection } from "firebase/firestore";
 import { getDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
+import toast, { Toaster } from "react-hot-toast";
 
 function Page() {
   const router = useRouter();
@@ -19,6 +20,7 @@ function Page() {
   const signInWithGoogle = async () => {
     await signInWithPopup(auth, provider);
     router.push(`/${auth.currentUser.uid}`);
+    toast.success("ログインに成功しました!");
     const docRef = doc(db, "users", auth.currentUser.uid);
     const docSnap = await getDoc(docRef);
     if (docSnap.exists()) {
@@ -169,6 +171,7 @@ function Page() {
   };
   return (
     <div className="m-5 mx-auto w-[980px] max-w-full mt-10">
+      <Toaster position="top-center" reverseOrder={false} />;
       <h1 className=" font-bold text-4xl">サインインをして始めましょう</h1>
       <div className="w-full m-14">
         <div className="mx-auto w-full">

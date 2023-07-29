@@ -21,20 +21,22 @@ function Footer() {
               Sign in
             </Link>
             <Link
-              href="#"
+              href="https://bento.me/kbk"
               className="text-gray-500 transition duration-100 hover:text-blue-500 active:text-blue-600"
+              target="_blank"
             >
-              Jobs
+              Profile
             </Link>
-            <Link
+            {/* <Link
               href="#"
               className="text-gray-500 transition duration-100 hover:text-blue-500 active:text-blue-600"
             >
               Press
-            </Link>
+            </Link> */}
             <Link
-              href="#"
+              href="https://blog.kobakoo.com/"
               className="text-gray-500 transition duration-100 hover:text-blue-500 active:text-blue-600"
+              target="_blank"
             >
               Blog
             </Link>
@@ -75,7 +77,7 @@ function Footer() {
               </svg>
             </Link>
             <Link
-              href="#"
+              href="https://github.com/kobakoo"
               target="_blank"
               className="text-gray-400 transition duration-100 hover:text-gray-500 active:text-gray-600"
             >

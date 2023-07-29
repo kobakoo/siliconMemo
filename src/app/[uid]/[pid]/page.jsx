@@ -7,6 +7,7 @@ import { collection, getDocs } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { auth } from "@/lib/firebase";
 import Image from "next/image";
+import toast, { Toaster } from "react-hot-toast";
 
 function Page() {
   const params = useParams();
@@ -15,19 +16,22 @@ function Page() {
   const [thumbnail, setThumbnail] = useState("");
   const [memo, setMemo] = useState("");
   const [edit, setEdit] = useState(false);
+  const [temp, setTemp] = useState(0);
 
   async function getProfile() {
-    const docRef = doc(db, "users", params.uid, "notes", params.pid);
-    const docSnap = await getDoc(docRef);
-    if (docSnap.exists()) {
-      console.log("Document data:", docSnap.data());
-      setTitle(docSnap.get("title"));
-      setDesc(docSnap.get("description"));
-      setThumbnail(docSnap.get("thumbnail"));
-      setMemo(docSnap.get("memo"));
-    } else {
-      // docSnap.data() will be undefined in this case
-      console.log("No such document!");
+    if (temp === 0) {
+      const docRef = doc(db, "users", params.uid, "notes", params.pid);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        console.log("Document data:", docSnap.data());
+        setTitle(docSnap.get("title"));
+        setDesc(docSnap.get("description"));
+        setThumbnail(docSnap.get("thumbnail"));
+        setMemo(docSnap.get("memo"));
+      } else {
+        // docSnap.data() will be undefined in this case
+        console.log("No such document!");
+      }
     }
   }
 
@@ -36,6 +40,7 @@ function Page() {
     await updateDoc(washingtonRef, {
       memo: memo,
     });
+    toast.success("保存しました!");
   };
 
   // useEffect(() => {
@@ -44,7 +49,7 @@ function Page() {
 
   setTimeout(async () => {
     getProfile();
-
+    setTemp(1);
     if (auth.currentUser != null) {
       if (params.uid === auth.currentUser.uid) {
         setEdit(true);
@@ -55,6 +60,8 @@ function Page() {
 
   return (
     <div>
+      <Toaster position="top-center" reverseOrder={false} />
+      <title>{title}</title>
       <div className="lg:w-4/12 md:w-2/3 sm:w-10/12 w-full mx-auto ">
         <div className="mx-5 mt-10">
           <div className="block">
